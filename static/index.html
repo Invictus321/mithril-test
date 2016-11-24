@@ -44,7 +44,6 @@ todo.vm = (function() {
             for (var i in tasks) {
                 vm.list.push(new todo.Todo({description: tasks[i].description, done: tasks[i].done}));
             }
-            console.log(vm.list)
         });        
     }
     return vm
