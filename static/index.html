@@ -1,6 +1,6 @@
 <!doctype html>
 <title>Todo app</title>
-<script src="//cdnjs.cloudflare.com/ajax/libs/mithril/0.2.5/mithril.min.js"></script>
+<script src="/mithril.min.js"></script>
 <body>
 <script>
 
@@ -73,6 +73,11 @@ todo.view = function() {
         m("input", {onchange: m.withAttr("value", todo.vm.description), value: todo.vm.description()}),
         m("button", {onclick: todo.vm.add}, "Add"),
         m("table", [
+            m("tr", [
+                m("td"),
+                m("td", {}, "Description"),
+                m("td", {}, "Changes")
+            ]),
             todo.vm.list.map(function(task, index) {
                 return m("tr", [
                     m("td", [
