@@ -11,9 +11,11 @@ todo.Todo = function(data) {
     this.id = m.prop(data.id);
     this.description = m.prop(data.description);
     this.done = m.prop(data.done);
+    this.changes = m.prop(data.changes);
     this.check = function() {
         var done = !self.done();
         self.done(done)
+        self.changes(self.changes()+1)
         var data = new FormData();
         data.append("id", self.id());
         data.append("done", done);
@@ -38,7 +40,7 @@ todo.vm = (function() {
         vm.add = function() {
             if (vm.description()) {
                 var id = vm.list.length
-                vm.list.push(new todo.Todo({id: id, description: vm.description(), done: false}));
+                vm.list.push(new todo.Todo({id: id, description: vm.description(), done: false, changes: 0}));
                 var data = new FormData();
                 data.append("id", id);
                 data.append("description", vm.description());
@@ -55,7 +57,7 @@ todo.vm = (function() {
         m.request({method: "GET", url: "/tasks"}).then(function(data) {
             var tasks = data.tasks
             for (var i in tasks) {
-                vm.list.push(new todo.Todo({id: tasks[i].id, description: tasks[i].description, done: tasks[i].done}));
+                vm.list.push(new todo.Todo({id: tasks[i].id, description: tasks[i].description, done: tasks[i].done, changes: tasks[i].changes}));
             }
         });        
     }
@@ -77,6 +79,7 @@ todo.view = function() {
                         m("input[type=checkbox]", {onclick: task.check, checked: task.done()})
                     ]),
                     m("td", {style: {textDecoration: task.done() ? "line-through" : "none"}}, task.description()),
+                    m("td", {}, task.changes())
                 ])
             })
         ])

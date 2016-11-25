@@ -11,6 +11,7 @@ type Task struct {
 	Id          int64  `json:"id"`
 	Description string `json:"description"`
 	Done        bool   `json:"done"`
+	Changes     int64  `json:"changes"`
 }
 
 var tasks []Task
@@ -19,6 +20,7 @@ func setDoneById(id int64, done bool) error {
 	for i, task := range tasks {
 		if id == task.Id {
 			tasks[i].Done = done
+			tasks[i].Changes += 1
 			return nil
 		}
 	}
@@ -73,6 +75,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 				idInt,
 				description,
 				false,
+				0,
 			}
 			tasks = append(tasks, task)
 		}
@@ -83,10 +86,6 @@ func handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	tasks = []Task{
-		Task{0, "Do stuff", false},
-		Task{1, "Be awesome", true},
-	}
 	http.HandleFunc("/tasks", handle)
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.ListenAndServe(":3000", nil)
