@@ -7,20 +7,23 @@
 var todo = {};
 
 todo.Todo = function(data) {
+    var self = this;
     this.id = m.prop(data.id);
     this.description = m.prop(data.description);
     this.done = m.prop(data.done);
     this.check = function() {
+        var done = !self.done();
+        self.done(done)
         var data = new FormData();
-        data.append("id", this.id());
-        data.append("done", !this.done());
+        data.append("id", self.id());
+        data.append("done", done);
         m.request({
             method: "PUT", 
             url: "/tasks",
             data: data,
             serialize: function(data) {return data}
-        })
-    }
+        });
+    };
 };
 
 todo.TodoList = Array;
@@ -71,7 +74,7 @@ todo.view = function() {
             todo.vm.list.map(function(task, index) {
                 return m("tr", [
                     m("td", [
-                        m("input[type=checkbox]", {onClick: task.check(), checked: task.done()})
+                        m("input[type=checkbox]", {onclick: task.check, checked: task.done()})
                     ]),
                     m("td", {style: {textDecoration: task.done() ? "line-through" : "none"}}, task.description()),
                 ])

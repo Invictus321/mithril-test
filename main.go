@@ -16,9 +16,9 @@ type Task struct {
 var tasks []Task
 
 func setDoneById(id int64, done bool) error {
-	for _, task := range tasks {
+	for i, task := range tasks {
 		if id == task.Id {
-			task.Done = done
+			tasks[i].Done = done
 			return nil
 		}
 	}
